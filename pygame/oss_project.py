@@ -34,6 +34,14 @@ class Pyree(Character):
 
     def stop_ball(self):
         pass
+class Kkobugi(Character):
+    def __init__(self):
+        self.image_path = 'kkobugi.png'
+        self.character_image = pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
+        self.speed = 5
+    
+    def reset_game(self):
+       pass
 
 BLACK = (0, 0, 0)
 size = [600, 800]
