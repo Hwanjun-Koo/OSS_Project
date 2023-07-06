@@ -5,19 +5,26 @@ import os
 pygame.init()  
 
 class Character:
+
     def __init__(self):
         self.image_path = ''
         self.character_image = pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
         self.speed = 5
     
-    def set_speed():
+    def set_speed(self):
         pass
 
-    def stop_ball():
+    def stop_ball(self):
         pass
 
-    def reset_game():
+    def reset_game(self):
         pass
+
+class Pikachu(Character):
+    def __init__(self):
+        self.image_path = ''
+        self.character_image = pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
+        self.speed = 5
 
 BLACK = (0, 0, 0)
 size = [600, 800]
