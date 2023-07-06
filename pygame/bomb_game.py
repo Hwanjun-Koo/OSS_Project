@@ -1,10 +1,23 @@
-import pygame  # 1. pygame 선언
+import pygame  
 import random
 import os
 
-pygame.init()  # 2. pygame 초기화
+pygame.init()  
 
-# 3. pygame에 사용되는 전역변수 선언
+class Character:
+    def __init__(self):
+        self.image_path = ''
+        self.character_image = pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
+        self.speed = 5
+    
+    def set_speed():
+        pass
+
+    def stop_ball():
+        pass
+
+    def reset_game():
+        pass
 
 BLACK = (0, 0, 0)
 size = [600, 800]
