@@ -26,6 +26,15 @@ class Pikachu(Character):
         self.character_image = pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
         self.speed = 5
 
+class Pyree(Character):
+    def __init__(self):
+        self.image_path = 'pyree.png'
+        self.character_image = pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
+        self.speed = 5
+
+    def stop_ball(self):
+        pass
+
 BLACK = (0, 0, 0)
 size = [600, 800]
 screen = pygame.display.set_mode(size)
