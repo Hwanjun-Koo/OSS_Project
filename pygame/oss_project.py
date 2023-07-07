@@ -54,20 +54,21 @@ done = False
 clock = pygame.time.Clock()
 
 def runGame():
-    bomb_image = pygame.image.load('bomb.png')
-    bomb_image = pygame.transform.scale(bomb_image, (50, 50))
-    bombs = []
+    ball_image = pygame.image.load('ball.png')
+    ball_image = pygame.transform.scale(ball_image, (50, 50))
+    balls = []
 
     background_image = pygame.image.load('background.png')
     background_image = pygame.transform.scale(background_image, size[0], size[1])
+
     screen.blit(background_image, (0, 0))
 
     for i in range(5):
-        rect = pygame.Rect(bomb_image.get_rect())
+        rect = pygame.Rect(ball_image.get_rect())
         rect.left = random.randint(0, size[0])
         rect.top = -100
         dy = random.randint(3, 9)
-        bombs.append({'rect': rect, 'dy': dy})
+        balls.append({'rect': rect, 'dy': dy})
 
     person_image = pygame.image.load('person.png')
     person_image = pygame.transform.scale(person_image, (100, 100))
@@ -97,15 +98,15 @@ def runGame():
                 elif event.key == pygame.K_RIGHT:
                     person_dx = 0
 
-        for bomb in bombs:
-            bomb['rect'].top += bomb['dy']
-            if bomb['rect'].top > size[1]:
-                bombs.remove(bomb)
-                rect = pygame.Rect(bomb_image.get_rect())
+        for ball in balls:
+            ball['rect'].top += ball['dy']
+            if ball['rect'].top > size[1]:
+                balls.remove(ball)
+                rect = pygame.Rect(ball_image.get_rect())
                 rect.left = random.randint(0, size[0])
                 rect.top = -100
                 dy = random.randint(3, 9)
-                bombs.append({'rect': rect, 'dy': dy})
+                balls.append({'rect': rect, 'dy': dy})
 
         person.left = person.left + person_dx
 
@@ -116,10 +117,10 @@ def runGame():
 
         screen.blit(person_image, person)
 
-        for bomb in bombs:
-            if bomb['rect'].colliderect(person):
+        for ball in balls:
+            if ball['rect'].colliderect(person):
                 done = True
-            screen.blit(bomb_image, bomb['rect'])
+            screen.blit(ball_image, ball['rect'])
 
         pygame.display.update()
 
