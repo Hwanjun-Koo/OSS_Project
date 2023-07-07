@@ -22,9 +22,12 @@ class Character:
 
 class Pikachu(Character):
     def __init__(self):
-        self.image_path = ''
+        self.image_path = 'pikachu.png'
         self.character_image = pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
         self.speed = 5
+
+    def set_speed(self):
+        self.speed = 10
 
 class Pyree(Character):
     def __init__(self):
@@ -54,6 +57,10 @@ def runGame():
     bomb_image = pygame.image.load('bomb.png')
     bomb_image = pygame.transform.scale(bomb_image, (50, 50))
     bombs = []
+
+    background_image = pygame.image.load('background.png')
+    background_image = pygame.transform.scale(background_image, size[0], size[1])
+    screen.blit(background_image, (0, 0))
 
     for i in range(5):
         rect = pygame.Rect(bomb_image.get_rect())
