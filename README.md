@@ -1,8 +1,8 @@
 # Pokemon Game
-Branches 
-base
-pikachu
-pyree
-kkobugi
-balls
-runGame
+Branches <br>
+base<br>
+pikachu<br>
+pyree<br>
+kkobugi<br>
+balls<br>
+runGame<br>
