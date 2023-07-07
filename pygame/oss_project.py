@@ -37,6 +37,7 @@ class Pyree(Character):
 
     def stop_ball(self):
         pass
+
 class Kkobugi(Character):
     def __init__(self):
         self.image_path = 'kkobugi.png'
@@ -69,13 +70,13 @@ def runGame():
         dy = random.randint(3, 9)
         bombs.append({'rect': rect, 'dy': dy})
 
-    person_image = pygame.image.load('person.png')
-    person_image = pygame.transform.scale(person_image, (100, 100))
-    person = pygame.Rect(person_image.get_rect())
-    person.left = size[0] // 2 - person.width // 2
-    person.top = size[1] - person.height
-    person_dx = 0
-    person_dy = 0
+    character_image = pygame.image.load('person.png')
+    character_image = pygame.transform.scale(character_image, (100, 100))
+    character = pygame.Rect(character_image.get_rect())
+    character.left = size[0] // 2 - character.width // 2
+    character.top = size[1] - character.height
+    character_dx = 0
+    character_dy = 0
 
     global done
     while not done:
@@ -88,14 +89,14 @@ def runGame():
                 break
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    person_dx = -5
+                    character_dx = -5
                 elif event.key == pygame.K_RIGHT:
-                    person_dx = 5
+                    character_dx = 5
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
-                    person_dx = 0
+                    character_dx = 0
                 elif event.key == pygame.K_RIGHT:
-                    person_dx = 0
+                    character_dx = 0
 
         for bomb in bombs:
             bomb['rect'].top += bomb['dy']
@@ -107,17 +108,17 @@ def runGame():
                 dy = random.randint(3, 9)
                 bombs.append({'rect': rect, 'dy': dy})
 
-        person.left = person.left + person_dx
+        character.left = character.left + character_dx
 
-        if person.left < 0:
-            person.left = 0
-        elif person.left > size[0] - person.width:
-            person.left = size[0] - person.width
+        if character.left < 0:
+            character.left = 0
+        elif character.left > size[0] - character.width:
+            character.left = size[0] - character.width
 
-        screen.blit(person_image, person)
+        screen.blit(character_image, character)
 
         for bomb in bombs:
-            if bomb['rect'].colliderect(person):
+            if bomb['rect'].colliderect(character):
                 done = True
             screen.blit(bomb_image, bomb['rect'])
 
