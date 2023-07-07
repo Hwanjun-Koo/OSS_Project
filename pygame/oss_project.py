@@ -7,7 +7,7 @@ pygame.init()
 class Character:
 
     def __init__(self):
-        self.image_path = 'pikachu.png'
+        self.image_path = ''
         self.character_image = pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
         self.speed = 5
     
