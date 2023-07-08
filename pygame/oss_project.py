@@ -77,7 +77,8 @@ def runGame():
     character_dx = 0
     character_dy = 0
 
-    
+    selected_character = None
+
     while not done:
         clock.tick(30)
         screen.blit(background_image, (0, 0))
@@ -87,7 +88,11 @@ def runGame():
                 done = True
                 break
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_1:
+                    selected_character == "pikachu"
+                    pikachu = Pikachu()
+                    pikachu.set_speed()
+                    speed = pikachu.speed
                     character_dx = -5
                 elif event.key == pygame.K_RIGHT:
                     character_dx = 5
