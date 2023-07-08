@@ -47,21 +47,19 @@ class Kkobugi(Character):
     def reset_game(self):
        pass
 
-BLACK = (0, 0, 0)
-size = [600, 800]
-screen = pygame.display.set_mode(size)
-
-done = False
-clock = pygame.time.Clock()
-
 def runGame():
+    size = [600, 700]
+    screen = pygame.display.set_mode(size)
+
+    done = False
+    clock = pygame.time.Clock()
+
     ball_image = pygame.image.load('ball.png')
     ball_image = pygame.transform.scale(ball_image, (50, 50))
     balls = []
 
     background_image = pygame.image.load('background.png')
-    background_image = pygame.transform.scale(background_image, size[0], size[1])
-
+    background_image = pygame.transform.scale(background_image, (size[0], size[1]))
     screen.blit(background_image, (0, 0))
 
     for i in range(5):
@@ -79,10 +77,10 @@ def runGame():
     character_dx = 0
     character_dy = 0
 
-    global done
+    
     while not done:
         clock.tick(30)
-        screen.fill(BLACK)
+        screen.blit(background_image, (0, 0))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
