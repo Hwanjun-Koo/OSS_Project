@@ -1,6 +1,5 @@
 import pygame  
 import random
-import os
 
 pygame.init()  
 
@@ -48,19 +47,21 @@ class Kkobugi(Character):
         pass
 
 def runGame():
+    pygame.init()
+
     size = [600, 700]
     screen = pygame.display.set_mode(size)
 
     done = False
     clock = pygame.time.Clock()
 
-    ball_image = pygame.image.load('ball.png')
-    ball_image = pygame.transform.scale(ball_image, (50, 50))
-    balls = []
-
     background_image = pygame.image.load('background.png')
     background_image = pygame.transform.scale(background_image, (size[0], size[1]))
     screen.blit(background_image, (0, 0))
+
+    ball_image = pygame.image.load('ball.png')
+    ball_image = pygame.transform.scale(ball_image, (50, 50))
+    balls = []
 
     for i in range(5):
         rect = pygame.Rect(ball_image.get_rect())
@@ -68,13 +69,6 @@ def runGame():
         rect.top = -100
         dy = random.randint(3, 9)
         balls.append({'rect': rect, 'dy': dy})
-
-    character_image = pygame.image.load('person.png')
-    character_image = pygame.transform.scale(character_image, (100, 100))
-    character = pygame.Rect(character_image.get_rect())
-    character.left = size[0] // 2 - character.width // 2
-    character.top = size[1] - character.height
-    character_dx = 0
     
 
     selected_character = None
@@ -90,7 +84,18 @@ def runGame():
                     pikachu.set_speed()
                     speed = pikachu.speed
                     character = pygame.Rect(pikachu.character_image.get_rect())
-                    
+                elif event.key == pygame.K_2:
+                    selected_character = "pyree"
+                    pyree = Pyree()
+                    speed = pyree.speed
+                    character = pygame.Rect(pyree.character_image.get_rect())
+
+        pygame.display.flip()
+        clock.tick(30)
+
+    character_dx = 0 
+    character.left = size[0] // 2 - character.width // 2
+    character.top = size[1] - character.height            
                     
 
     while not done:
@@ -122,16 +127,18 @@ def runGame():
             
         if selected_character == "pikachu":
             screen.blit(pikachu.character_image, character)
+        elif selected_character == "pyree":
+            screen.blit(pyree.character_image, character)
         
-        # for ball in balls:
-        #     ball['rect'].top += ball['dy']
-        #     if ball['rect'].top > size[1]:
-        #         balls.remove(ball)
-        #         rect = pygame.Rect(ball_image.get_rect())
-        #         rect.left = random.randint(0, size[0])
-        #         rect.top = -100
-        #         dy = random.randint(3, 9)
-        #         balls.append({'rect': rect, 'dy': dy}) 
+        for ball in balls:
+            ball['rect'].top += ball['dy']
+            if ball['rect'].top > size[1]:
+                balls.remove(ball)
+                rect = pygame.Rect(ball_image.get_rect())
+                rect.left = random.randint(0, size[0])
+                rect.top = -100
+                dy = random.randint(3, 9)
+                balls.append({'rect': rect, 'dy': dy}) 
     
 
         for ball in balls:
