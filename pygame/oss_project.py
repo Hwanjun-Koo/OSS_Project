@@ -45,7 +45,7 @@ class Kkobugi(Character):
         self.speed = 5
     
     def reset_game(self):
-       pass
+        pass
 
 def runGame():
     size = [600, 700]
@@ -75,9 +75,23 @@ def runGame():
     character.left = size[0] // 2 - character.width // 2
     character.top = size[1] - character.height
     character_dx = 0
-    character_dy = 0
+    
 
     selected_character = None
+    while selected_character is None:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_1:
+                    selected_character = "pikachu"
+                    pikachu = Pikachu()
+                    pikachu.set_speed()
+                    speed = pikachu.speed
+                    character = pygame.Rect(pikachu.character_image.get_rect())
+                    
+                    
 
     while not done:
         clock.tick(30)
@@ -88,29 +102,16 @@ def runGame():
                 done = True
                 break
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_1:
-                    selected_character == "pikachu"
-                    pikachu = Pikachu()
-                    pikachu.set_speed()
-                    speed = pikachu.speed
-                    character_dx = -5
+                if event.key == pygame.K_LEFT:
+                    character_dx = -speed
                 elif event.key == pygame.K_RIGHT:
-                    character_dx = 5
+                    character_dx = speed
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
                     character_dx = 0
                 elif event.key == pygame.K_RIGHT:
                     character_dx = 0
 
-        for ball in balls:
-            ball['rect'].top += ball['dy']
-            if ball['rect'].top > size[1]:
-                balls.remove(ball)
-                rect = pygame.Rect(ball_image.get_rect())
-                rect.left = random.randint(0, size[0])
-                rect.top = -100
-                dy = random.randint(3, 9)
-                balls.append({'rect': rect, 'dy': dy})
 
         character.left = character.left + character_dx
 
@@ -118,8 +119,20 @@ def runGame():
             character.left = 0
         elif character.left > size[0] - character.width:
             character.left = size[0] - character.width
-
-        screen.blit(character_image, character)
+            
+        if selected_character == "pikachu":
+            screen.blit(pikachu.character_image, character)
+        
+        # for ball in balls:
+        #     ball['rect'].top += ball['dy']
+        #     if ball['rect'].top > size[1]:
+        #         balls.remove(ball)
+        #         rect = pygame.Rect(ball_image.get_rect())
+        #         rect.left = random.randint(0, size[0])
+        #         rect.top = -100
+        #         dy = random.randint(3, 9)
+        #         balls.append({'rect': rect, 'dy': dy}) 
+    
 
         for ball in balls:
             if ball['rect'].colliderect(character):
