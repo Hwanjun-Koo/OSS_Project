@@ -89,6 +89,11 @@ def runGame():
                     pyree = Pyree()
                     speed = pyree.speed
                     character = pygame.Rect(pyree.character_image.get_rect())
+                elif event.key == pygame.K_3:
+                    selected_character = "kkobugi"
+                    kkobugi = Kkobugi()
+                    speed = kkobugi.speed
+                    character = pygame.Rect(kkobugi.character_image.get_rect())
 
         pygame.display.flip()
         clock.tick(30)
@@ -119,7 +124,7 @@ def runGame():
 
 
         character.left = character.left + character_dx
-
+        
         if character.left < 0:
             character.left = 0
         elif character.left > size[0] - character.width:
@@ -129,6 +134,8 @@ def runGame():
             screen.blit(pikachu.character_image, character)
         elif selected_character == "pyree":
             screen.blit(pyree.character_image, character)
+        elif selected_character == "kkobugi":
+            screen.blit(kkobugi.character_image, character)
         
         for ball in balls:
             ball['rect'].top += ball['dy']
