@@ -1,7 +1,6 @@
 import pygame  
 import random
-
-pygame.init()  
+ 
 
 class Character:
 
@@ -43,8 +42,16 @@ class Kkobugi(Character):
         self.character_image = pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
         self.speed = 5
     
-    def reset_game(self):
-        pass
+    def reset_game(self, screen, ball_image, size, count):
+        balls = []
+        font = pygame.font.Font('NanumGothic.ttf', 30)
+        text = font.render(f"!목숨이 {count}번 남았습니다!", True, (255, 0, 0))
+        screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2 - 3 * text.get_height()))
+        pygame.display.flip()
+        pygame.time.delay(1000)
+        balls = balls_init(ball_image, size)
+        balls = gen_balls(balls, ball_image, size)
+        return balls
 
 def balls_init(ball_image, size):
     random.seed()
@@ -87,7 +94,8 @@ def runGame():
     ball_image = pygame.image.load('ball.png')
     ball_image = pygame.transform.scale(ball_image, (50, 50))
     balls = balls_init(ball_image, size)
-
+    ball_count = 3
+    
     selected_character = None
     while selected_character is None:
         for event in pygame.event.get():
@@ -155,7 +163,21 @@ def runGame():
 
         for ball in balls:
             if ball['rect'].colliderect(character):
-                done = True
+                if (selected_character == "kkobugi") and (ball_count >= 2):
+                    screen.blit(background_image, (0, 0))
+                    ball_count-=1
+                    balls = kkobugi.reset_game(screen, ball_image, size, ball_count)
+                    break
+                else: 
+                    balls = []
+                    screen.blit(background_image, (0, 0))
+                    font = pygame.font.Font('NanumGothic.ttf', 50)
+                    text = font.render("!게임종료!", True, (255, 0, 0))
+                    screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2 - 3 * text.get_height()))
+                    pygame.display.flip()
+                    pygame.time.delay(1000)
+                    done = True
+                    break
             screen.blit(ball_image, ball['rect'])
 
         pygame.display.update()
