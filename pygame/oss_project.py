@@ -94,7 +94,7 @@ def runGame():
     ball_image = pygame.image.load('ball.png')
     ball_image = pygame.transform.scale(ball_image, (50, 50))
     balls = balls_init(ball_image, size)
-    ball_count = 3
+    life_count = 3
     
     selected_character = None
     while selected_character is None:
@@ -163,10 +163,10 @@ def runGame():
 
         for ball in balls:
             if ball['rect'].colliderect(character):
-                if (selected_character == "kkobugi") and (ball_count >= 2):
+                if (selected_character == "kkobugi") and (life_count >= 2):
                     screen.blit(background_image, (0, 0))
-                    ball_count-=1
-                    balls = kkobugi.reset_game(screen, ball_image, size, ball_count)
+                    life_count-=1
+                    balls = kkobugi.reset_game(screen, ball_image, size, life_count)
                     break
                 else: 
                     balls = []
