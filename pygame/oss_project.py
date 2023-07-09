@@ -1,6 +1,5 @@
 import pygame  
 import random
- 
 
 class Character:
 
@@ -33,11 +32,13 @@ class Pyree(Character):
         self.character_image = pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
         self.speed = 5
 
-    def stop_ball(self, screen, ball_image, size):
+    def stop_ball(self, screen, ball_image, size, skill_count):
         balls = []
         font = pygame.font.Font('NanumGothic.ttf', 30)
         text = font.render("!포켓볼이 일시적으로 사라집니다!", True, (255, 0, 0))
-        screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2 - 3 * text.get_height()))
+        screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2 - 4 * text.get_height()))
+        text = font.render(f"* 남은 스킬 사용 횟수는 {skill_count}번 입니다 *", True, (255, 0, 0))
+        screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2 - 2 * text.get_height()))
         pygame.display.flip()
         pygame.time.delay(1000)
         balls = balls_init(ball_image, size)
@@ -86,6 +87,17 @@ def gen_balls(balls, ball_image, size):
                 balls.append({'rect': rect, 'dy': dy})
     return balls
 
+def fin_game(balls, screen, background_image, size):
+    balls = []
+    screen.blit(background_image, (0, 0))
+    font = pygame.font.Font('NanumGothic.ttf', 50)
+    text = font.render("!게임종료!", True, (255, 0, 0))
+    screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2 - 3 * text.get_height()))
+    pygame.display.flip()
+    pygame.time.delay(1000)
+    done = True
+    return balls, done
+
 def runGame():
     pygame.init()
 
@@ -103,6 +115,7 @@ def runGame():
     ball_image = pygame.transform.scale(ball_image, (50, 50))
     balls = balls_init(ball_image, size)
     life_count = 3
+    skill_count = 5
     
     selected_character = None
     while selected_character is None:
@@ -173,8 +186,17 @@ def runGame():
             if selected_character == "pyree":
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
-                        balls = pyree.stop_ball(screen, ball_image, size)
-                        break
+                        if skill_count >= 1:
+                            skill_count -= 1
+                            balls = pyree.stop_ball(screen, ball_image, size, skill_count)
+                            break
+                        else:
+                            font = pygame.font.Font('NanumGothic.ttf', 50)
+                            text = font.render("!사용 초과!", True, (255, 0, 0))
+                            screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2 - 3 * text.get_height()))
+                            pygame.display.flip()
+                            pygame.time.delay(100)
+                            break
             if ball['rect'].colliderect(character):
                 if (selected_character == "kkobugi") and (life_count >= 2):
                     screen.blit(background_image, (0, 0))
@@ -182,14 +204,7 @@ def runGame():
                     balls = kkobugi.reset_game(screen, ball_image, size, life_count)
                     break
                 else: 
-                    balls = []
-                    screen.blit(background_image, (0, 0))
-                    font = pygame.font.Font('NanumGothic.ttf', 50)
-                    text = font.render("!게임종료!", True, (255, 0, 0))
-                    screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2 - 3 * text.get_height()))
-                    pygame.display.flip()
-                    pygame.time.delay(1000)
-                    done = True
+                    balls, done = fin_game(balls, screen, background_image, size)
                     break
             screen.blit(ball_image, ball['rect'])
 
