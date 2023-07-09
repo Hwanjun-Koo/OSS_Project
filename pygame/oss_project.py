@@ -33,8 +33,16 @@ class Pyree(Character):
         self.character_image = pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
         self.speed = 5
 
-    def stop_ball(self):
-        pass
+    def stop_ball(self, screen, ball_image, size):
+        balls = []
+        font = pygame.font.Font('NanumGothic.ttf', 30)
+        text = font.render("!포켓볼이 일시적으로 사라집니다!", True, (255, 0, 0))
+        screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2 - 3 * text.get_height()))
+        pygame.display.flip()
+        pygame.time.delay(1000)
+        balls = balls_init(ball_image, size)
+        balls = gen_balls(balls, ball_image, size)
+        return balls
 
 class Kkobugi(Character):
     def __init__(self):
@@ -162,6 +170,11 @@ def runGame():
             screen.blit(kkobugi.character_image, character)
 
         for ball in balls:
+            if selected_character == "pyree":
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        balls = pyree.stop_ball(screen, ball_image, size)
+                        break
             if ball['rect'].colliderect(character):
                 if (selected_character == "kkobugi") and (life_count >= 2):
                     screen.blit(background_image, (0, 0))
