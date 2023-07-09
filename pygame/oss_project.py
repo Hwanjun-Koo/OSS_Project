@@ -162,29 +162,30 @@ def runGame():
                 dy = random.randint(3, 9)
                 balls.append({'rect': rect, 'dy': dy})
 
-
         for ball in balls:
             if ball['rect'].colliderect(character):
-
                 done = True
             screen.blit(ball_image, ball['rect'])
 
         for coin in coins:
             coin['rect'].top += coin['dy']
-            if coin['rect'].top > size[1]:
+            if coin['rect'].top > size[1] or coin['rect'].colliderect(character):
                 coins.remove(coin)
                 rect = pygame.Rect(coin_image.get_rect())
-                rect.left = random.randint(0, size[0])
                 rect.top = -100
                 dy = random.randint(3, 9)
+                while True:
+                    rect.left = random.randint(0, size[0])
+                    if not rect.colliderect(character):
+                        break
                 coins.append({'rect': rect, 'dy': dy})
 
         for coin in coins:
             if coin['rect'].colliderect(character):
-                coins.remove(coin)  # 캐릭터가 코인을 획득하면, 코인을 리스트에서 제거합니다.
+                coins.remove(coin)
                 if selected_character == "pikachu":
-                    pikachu.increase_score()  # 획득한 캐릭터의 점수를 증가시킵니다.
-                    print('Pikachu score:', pikachu.score)  # 콘솔에 현재 점수를 출력합니다.
+                    pikachu.increase_score()
+                    print('Pikachu score:', pikachu.score)
                 elif selected_character == "pyree":
                     pyree.increase_score()
                     print('Pyree score:', pyree.score)
