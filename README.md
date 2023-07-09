@@ -24,3 +24,5 @@
 - **balls**: Where we work on the "Monster Balls" in our game. This includes things like how the Monster Balls move, look, and what happens when they hit a character.
 
 - **runGame**: This branch is where we develop and change the code that makes the game run in pygame. This includes things like the main game loop (which is the code that keeps the game going), how the game responds to things like button clicks or key presses, and how the game updates itself.
+
+- **coin**: Coin falls down as balls. As Character gather coins, score increases.
