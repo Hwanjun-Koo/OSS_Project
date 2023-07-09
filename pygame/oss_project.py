@@ -1,6 +1,7 @@
 import pygame  
 import random
- 
+
+pygame.init()
 
 class Character:
 
@@ -8,7 +9,8 @@ class Character:
         self.image_path = ''
         self.character_image = pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
         self.speed = 5
-    
+        self.score = 0
+
     def set_speed(self):
         pass
 
@@ -17,6 +19,9 @@ class Character:
 
     def reset_game(self):
         pass
+
+    def increase_score(self):  # 점수 증가 메서드
+        self.score += 1
 
 class Pikachu(Character):
     def __init__(self):
@@ -33,58 +38,17 @@ class Pyree(Character):
         self.character_image = pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
         self.speed = 5
 
-    def stop_ball(self, screen, ball_image, size):
-        balls = []
-        font = pygame.font.Font('NanumGothic.ttf', 30)
-        text = font.render("!포켓볼이 일시적으로 사라집니다!", True, (255, 0, 0))
-        screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2 - 3 * text.get_height()))
-        pygame.display.flip()
-        pygame.time.delay(1000)
-        balls = balls_init(ball_image, size)
-        balls = gen_balls(balls, ball_image, size)
-        return balls
+    def stop_ball(self):
+        pass
 
 class Kkobugi(Character):
     def __init__(self):
         self.image_path = 'kkobugi.png'
         self.character_image = pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
         self.speed = 5
-    
-    def reset_game(self, screen, ball_image, size, count):
-        balls = []
-        font = pygame.font.Font('NanumGothic.ttf', 30)
-        text = font.render(f"!목숨이 {count}번 남았습니다!", True, (255, 0, 0))
-        screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2 - 3 * text.get_height()))
-        pygame.display.flip()
-        pygame.time.delay(1000)
-        balls = balls_init(ball_image, size)
-        balls = gen_balls(balls, ball_image, size)
-        return balls
 
-def balls_init(ball_image, size):
-    random.seed()
-    balls = []
-    for _ in range(5):
-        if len(balls) >= 6:
-            break
-        rect = pygame.Rect(ball_image.get_rect())
-        rect.left = random.randint(0, size[0])
-        rect.top = -100
-        dy = random.randint(3, 9)
-        balls.append({'rect': rect, 'dy': dy})
-    return balls
-
-def gen_balls(balls, ball_image, size):
-    for ball in balls:
-            ball['rect'].top += ball['dy']
-            if ball['rect'].top > size[1]:
-                balls.remove(ball)
-                rect = pygame.Rect(ball_image.get_rect())
-                rect.left = random.randint(0, size[0])
-                rect.top = -100
-                dy = random.randint(3, 9)
-                balls.append({'rect': rect, 'dy': dy})
-    return balls
+    def reset_game(self):
+        pass
 
 def runGame():
     pygame.init()
@@ -101,9 +65,27 @@ def runGame():
 
     ball_image = pygame.image.load('ball.png')
     ball_image = pygame.transform.scale(ball_image, (50, 50))
-    balls = balls_init(ball_image, size)
-    life_count = 3
-    
+    balls = []
+
+    coin_image = pygame.image.load('coin.png')
+    coin_image = pygame.transform.scale(coin_image, (40, 40))
+    coins = []
+
+    for i in range(5):
+        rect = pygame.Rect(ball_image.get_rect())
+        rect.left = random.randint(0, size[0])
+        rect.top = -100
+        dy = random.randint(3, 9)
+        balls.append({'rect': rect, 'dy': dy})
+
+    for i in range(4): #ball 개수보다 작은 개수로 3개 생성
+        rect = pygame.Rect(coin_image.get_rect())
+        rect.left = random.randint(0, size[0])
+        rect.top = -100
+        dy = random.randint(3, 9)
+        coins.append({'rect': rect, 'dy': dy})
+
+
     selected_character = None
     while selected_character is None:
         for event in pygame.event.get():
@@ -131,14 +113,15 @@ def runGame():
         pygame.display.flip()
         clock.tick(30)
 
-    character_dx = 0 
+    character_dx = 0
     character.left = size[0] // 2 - character.width // 2
-    character.top = size[1] - character.height            
-                    
+    character.top = size[1] - character.height
+
 
     while not done:
         clock.tick(30)
         screen.blit(background_image, (0, 0))
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
@@ -154,14 +137,14 @@ def runGame():
                 elif event.key == pygame.K_RIGHT:
                     character_dx = 0
 
-        balls = gen_balls(balls, ball_image, size)
 
         character.left = character.left + character_dx
+
         if character.left < 0:
             character.left = 0
         elif character.left > size[0] - character.width:
             character.left = size[0] - character.width
-            
+
         if selected_character == "pikachu":
             screen.blit(pikachu.character_image, character)
         elif selected_character == "pyree":
@@ -170,31 +153,47 @@ def runGame():
             screen.blit(kkobugi.character_image, character)
 
         for ball in balls:
-            if selected_character == "pyree":
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RETURN:
-                        balls = pyree.stop_ball(screen, ball_image, size)
-                        break
+            ball['rect'].top += ball['dy']
+            if ball['rect'].top > size[1]:
+                balls.remove(ball)
+                rect = pygame.Rect(ball_image.get_rect())
+                rect.left = random.randint(0, size[0])
+                rect.top = -100
+                dy = random.randint(3, 9)
+                balls.append({'rect': rect, 'dy': dy})
+
+
+        for ball in balls:
             if ball['rect'].colliderect(character):
-                if (selected_character == "kkobugi") and (life_count >= 2):
-                    screen.blit(background_image, (0, 0))
-                    life_count-=1
-                    balls = kkobugi.reset_game(screen, ball_image, size, life_count)
-                    break
-                else: 
-                    balls = []
-                    screen.blit(background_image, (0, 0))
-                    font = pygame.font.Font('NanumGothic.ttf', 50)
-                    text = font.render("!게임종료!", True, (255, 0, 0))
-                    screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2 - 3 * text.get_height()))
-                    pygame.display.flip()
-                    pygame.time.delay(1000)
-                    done = True
-                    break
+
+                done = True
             screen.blit(ball_image, ball['rect'])
 
-        pygame.display.update()
+        for coin in coins:
+            coin['rect'].top += coin['dy']
+            if coin['rect'].top > size[1]:
+                coins.remove(coin)
+                rect = pygame.Rect(coin_image.get_rect())
+                rect.left = random.randint(0, size[0])
+                rect.top = -100
+                dy = random.randint(3, 9)
+                coins.append({'rect': rect, 'dy': dy})
 
+        for coin in coins:
+            if coin['rect'].colliderect(character):
+                coins.remove(coin)  # 캐릭터가 코인을 획득하면, 코인을 리스트에서 제거합니다.
+                if selected_character == "pikachu":
+                    pikachu.increase_score()  # 획득한 캐릭터의 점수를 증가시킵니다.
+                    print('Pikachu score:', pikachu.score)  # 콘솔에 현재 점수를 출력합니다.
+                elif selected_character == "pyree":
+                    pyree.increase_score()
+                    print('Pyree score:', pyree.score)
+                elif selected_character == "kkobugi":
+                    kkobugi.increase_score()
+                    print('Kkobugi score:', kkobugi.score)
+            screen.blit(coin_image, coin['rect'])
+
+        pygame.display.update()
 
 runGame()
 pygame.quit()
