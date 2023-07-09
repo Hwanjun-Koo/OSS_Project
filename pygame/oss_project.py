@@ -46,6 +46,31 @@ class Kkobugi(Character):
     def reset_game(self):
         pass
 
+def balls_init(ball_image, size):
+    random.seed()
+    balls = []
+    for _ in range(5):
+        if len(balls) >= 6:
+            break
+        rect = pygame.Rect(ball_image.get_rect())
+        rect.left = random.randint(0, size[0])
+        rect.top = -100
+        dy = random.randint(3, 9)
+        balls.append({'rect': rect, 'dy': dy})
+    return balls
+
+def gen_balls(balls, ball_image, size):
+    for ball in balls:
+            ball['rect'].top += ball['dy']
+            if ball['rect'].top > size[1]:
+                balls.remove(ball)
+                rect = pygame.Rect(ball_image.get_rect())
+                rect.left = random.randint(0, size[0])
+                rect.top = -100
+                dy = random.randint(3, 9)
+                balls.append({'rect': rect, 'dy': dy})
+    return balls
+
 def runGame():
     pygame.init()
 
@@ -61,15 +86,7 @@ def runGame():
 
     ball_image = pygame.image.load('ball.png')
     ball_image = pygame.transform.scale(ball_image, (50, 50))
-    balls = []
-
-    for i in range(5):
-        rect = pygame.Rect(ball_image.get_rect())
-        rect.left = random.randint(0, size[0])
-        rect.top = -100
-        dy = random.randint(3, 9)
-        balls.append({'rect': rect, 'dy': dy})
-    
+    balls = balls_init(ball_image, size)
 
     selected_character = None
     while selected_character is None:
@@ -106,7 +123,6 @@ def runGame():
     while not done:
         clock.tick(30)
         screen.blit(background_image, (0, 0))
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
@@ -122,9 +138,9 @@ def runGame():
                 elif event.key == pygame.K_RIGHT:
                     character_dx = 0
 
+        balls = gen_balls(balls, ball_image, size)
 
         character.left = character.left + character_dx
-        
         if character.left < 0:
             character.left = 0
         elif character.left > size[0] - character.width:
@@ -136,21 +152,9 @@ def runGame():
             screen.blit(pyree.character_image, character)
         elif selected_character == "kkobugi":
             screen.blit(kkobugi.character_image, character)
-        
-        for ball in balls:
-            ball['rect'].top += ball['dy']
-            if ball['rect'].top > size[1]:
-                balls.remove(ball)
-                rect = pygame.Rect(ball_image.get_rect())
-                rect.left = random.randint(0, size[0])
-                rect.top = -100
-                dy = random.randint(3, 9)
-                balls.append({'rect': rect, 'dy': dy}) 
-    
 
         for ball in balls:
             if ball['rect'].colliderect(character):
-
                 done = True
             screen.blit(ball_image, ball['rect'])
 
