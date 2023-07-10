@@ -22,3 +22,6 @@
 
 
 - **balls**: Where we work on the "Monster Balls" in our game. This includes things like how the Monster Balls move, look, and what happens when they hit a character.
+
+
+- **coin**: This branch is about coins falling down as 'balls' do. Character should collect coins while avoiding the balls. Score will increase as character collects the coins.
