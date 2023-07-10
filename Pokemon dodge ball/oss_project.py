@@ -9,7 +9,7 @@ class Character:
         self.character_image = \
             pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
         self.speed = 5
-        self.score = 0  # Score 변수 추가
+        self.score = 0
 
     def set_speed(self):
         pass
@@ -20,12 +20,13 @@ class Character:
     def reset_game(self):
         pass
 
-    def increase_score(self):  # 점수 증가 메서드
+    def increase_score(self):
         self.score += 1
 
 
 class Pikachu(Character):
     def __init__(self):
+        self.score = 0
         self.image_path = 'pikachu.png'
         self.character_image = pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
         self.speed = 5
@@ -36,6 +37,7 @@ class Pikachu(Character):
 
 class Pyree(Character):
     def __init__(self):
+        self.score = 0
         self.image_path = 'pyree.png'
         self.character_image = pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
         self.speed = 5
@@ -56,6 +58,7 @@ class Pyree(Character):
 
 class Kkobugi(Character):
     def __init__(self):
+        self.score = 0
         self.image_path = 'kkobugi.png'
         self.character_image = pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
         self.speed = 5
@@ -99,7 +102,7 @@ def gen_balls(balls, ball_image, size):
     return balls
 
 
-def coins_init(coin_image, size):  # coin init 함수
+def coins_init(coin_image, size):
     random.seed()
     coins = []
     for _ in range(5):
@@ -113,7 +116,7 @@ def coins_init(coin_image, size):  # coin init 함수
     return coins
 
 
-def gen_coins(coins, coin_image, size):  # coin 생성 함수
+def gen_coins(coins, coin_image, size):
     for coin in coins:
         coin['rect'].top += coin['dy']
         if coin['rect'].top > size[1]:
@@ -124,7 +127,6 @@ def gen_coins(coins, coin_image, size):  # coin 생성 함수
             dy = random.randint(2, 6)
             coins.append({'rect': rect, 'dy': dy})
     return coins
-
 
 def fin_game(balls, screen, background_image, size):
     balls = []
@@ -137,6 +139,14 @@ def fin_game(balls, screen, background_image, size):
     done = True
     return balls, done
 
+def game_win(screen, size):
+    font = pygame.font.Font(None, 74)
+    win_text = font.render('!승리!', True, (255, 0, 0))
+    screen.blit(win_text, (size[0] // 2 - win_text.get_width() // 2, size[1] // 2 - win_text.get_height() // 2))
+    pygame.display.flip()
+    pygame.time.delay(1000)
+    done = True
+    return done
 
 def runGame():
     pygame.init()
@@ -157,7 +167,7 @@ def runGame():
     life_count = 3
     skill_count = 5
 
-    coin_image = pygame.image.load('coin.png')  # 코인 이미지 가져옴
+    coin_image = pygame.image.load('coin.png')
     coin_image = pygame.transform.scale(coin_image, (50, 50))
     coins = coins_init(coin_image, size)
 
@@ -239,7 +249,7 @@ def runGame():
                     character_dx = 0
 
         balls = gen_balls(balls, ball_image, size)
-        coins = gen_coins(coins, coin_image, size)  # coin 생성
+        coins = gen_coins(coins, coin_image, size)
 
         character.left = character.left + character_dx
         if character.left < 0:
@@ -253,6 +263,16 @@ def runGame():
             screen.blit(pyree.character_image, character)
         elif selected_character == "kkobugi":
             screen.blit(kkobugi.character_image, character)
+
+        font = pygame.font.Font('NanumGothic.ttf', 30)
+        if selected_character == "pikachu":
+            score_text = font.render(f"Score: {pikachu.score}", True, (255, 0, 0))
+        elif selected_character == "pyree":
+            score_text = font.render(f"Score: {pyree.score}", True, (255, 0, 0))
+        elif selected_character == "kkobugi":
+            score_text = font.render(f"Score: {kkobugi.score}", True, (255, 0, 0))
+
+        screen.blit(score_text, (10, 10))
 
         for ball in balls:
             if selected_character == "pyree":
@@ -286,7 +306,21 @@ def runGame():
         for coin in coins:
             coin['rect'].top += coin['dy']
             if coin['rect'].top > size[1] or coin['rect'].colliderect(character):
+                if coin['rect'].colliderect(character):
+                    if selected_character == "pikachu":
+                        pikachu.increase_score()
+                        if pikachu.score >= 15:
+                            game_win()
+                    elif selected_character == "pyree":
+                        pyree.increase_score()
+                        if pyree.score >= 15:
+                            game_win()
+                    elif selected_character == "kkobugi":
+                        if kkobugi.score >= 15:
+                            game_win()
+
                 coins.remove(coin)
+
                 rect = pygame.Rect(coin_image.get_rect())
                 rect.top = -100
                 dy = random.randint(3, 9)
@@ -296,17 +330,6 @@ def runGame():
                         break
                 coins.append({'rect': rect, 'dy': dy})
 
-        for coin in coins:
-            if coin['rect'].colliderect(character):
-                if selected_character == "pikachu":
-                    pikachu.increase_score()  # 점수 증가 메서드 호출 변경
-                    coins.remove(coin)  # 코인 제거
-                elif selected_character == "pyree":
-                    pyree.increase_score()  # 점수 증가 메서드 호출 변경
-                    coins.remove(coin)  # 코인 제거
-                elif selected_character == "kkobugi":
-                    kkobugi.increase_score()  # 점수 증가 메서드 호출 변경
-                    coins.remove(coin)  # 코인 제거
             screen.blit(coin_image, coin['rect'])
 
         pygame.display.update()
