@@ -210,7 +210,10 @@ def runGame():
     character_dx = 0
     character.left = size[0] // 2 - character.width // 2
     character.top = size[1] - character.height
-
+    
+    IGNORE_KEY_EVENTS = pygame.USEREVENT + 1  # 사용자 지정 이벤트 생성
+    ignore_key_events = False
+    
     while not done:
         clock.tick(30)
         screen.blit(background_image, (0, 0))
@@ -218,19 +221,24 @@ def runGame():
             if event.type == pygame.QUIT:
                 done = True
                 break
+            elif event.type == IGNORE_KEY_EVENTS:
+                ignore_key_events = False
             elif event.type == pygame.KEYDOWN:
+                if ignore_key_events:
+                    continue
                 if event.key == pygame.K_LEFT:
                     character_dx = -speed
                 elif event.key == pygame.K_RIGHT:
                     character_dx = speed
             elif event.type == pygame.KEYUP:
+                if ignore_key_events:
+                    continue
                 if event.key == pygame.K_LEFT:
                     character_dx = 0
                 elif event.key == pygame.K_RIGHT:
                     character_dx = 0
 
         balls = gen_balls(balls, ball_image, size)
-
         coins = gen_coins(coins, coin_image, size)  # coin 생성
 
         character.left = character.left + character_dx
@@ -251,6 +259,8 @@ def runGame():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         if skill_count >= 1:
+                            pygame.time.set_timer(IGNORE_KEY_EVENTS, 1000)  # 1초동안 모든 키 입력 무시
+                            ignore_key_events = True
                             skill_count -= 1
                             balls = pyree.stop_ball(screen, ball_image, size, skill_count)
                             break
@@ -300,7 +310,6 @@ def runGame():
             screen.blit(coin_image, coin['rect'])
 
         pygame.display.update()
-
 
 runGame()
 pygame.quit()
