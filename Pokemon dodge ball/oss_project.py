@@ -310,7 +310,6 @@ def runGame():
                     if selected_character == "pikachu":
                         pikachu.increase_score()
                         if pikachu.score >= 15:
-                            screen.blit(score_text, (10, 10))
                             done = game_win(screen, size)
                     elif selected_character == "pyree":
                         pyree.increase_score()
