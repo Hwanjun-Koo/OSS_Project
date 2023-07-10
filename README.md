@@ -5,7 +5,7 @@
 ---
 
 
-- Code base : Open source code named "Dodge the bomb"
+- Code base : Open source code named ['Dodge the bomb'](https://github.com/Hwanjun-Koo/OSS_Project/tree/main/Dodge%20the%20bomb)
 
 
 - Repository setting : Semi-integration manager
