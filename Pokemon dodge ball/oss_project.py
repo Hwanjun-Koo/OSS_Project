@@ -45,7 +45,7 @@ class Pyree(Character):
     def stop_ball(self, screen, ball_image, size, skill_count):
         balls = []
         font = pygame.font.Font('NanumGothic.ttf', 30)
-        text = font.render("!포켓볼이 일시적으로 사라집니다!", True, (255, 0, 0))
+        text = font.render("!공이 일시적으로 사라집니다!", True, (255, 0, 0))
         screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2 - 4 * text.get_height()))
         text = font.render(f"* 남은 스킬 사용 횟수는 {skill_count}번 입니다 *", True, (255, 0, 0))
         screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2 - 2 * text.get_height()))
@@ -128,7 +128,7 @@ def gen_coins(coins, coin_image, size):
             coins.append({'rect': rect, 'dy': dy})
     return coins
 
-def game_loose(balls, screen, background_image, size):
+def game_lose(balls, screen, background_image, size):
     balls = []
     screen.blit(background_image, (0, 0))
     font = pygame.font.Font('NanumGothic.ttf', 50)
@@ -140,7 +140,7 @@ def game_loose(balls, screen, background_image, size):
     return balls, done
 
 def game_win(screen, size):
-    font = pygame.font.Font(None, 74)
+    font = pygame.font.Font('NanumGothic.ttf', 50)
     win_text = font.render("!Win!", True, (255, 0, 0))
     screen.blit(win_text, (size[0] // 2 - win_text.get_width() // 2, size[1] // 2 - win_text.get_height() // 2))
     pygame.display.flip()
@@ -298,7 +298,7 @@ def runGame():
                     balls = kkobugi.reset_game(screen, ball_image, size, life_count)
                     break
                 else:
-                    balls, done = game_loose(balls, screen, background_image, size)
+                    balls, done = game_lose(balls, screen, background_image, size)
                     break
             screen.blit(ball_image, ball['rect'])
 
@@ -306,9 +306,11 @@ def runGame():
             coin['rect'].top += coin['dy']
             if coin['rect'].top > size[1] or coin['rect'].colliderect(character):
                 if coin['rect'].colliderect(character):
+                    coins.remove(coin)
                     if selected_character == "pikachu":
                         pikachu.increase_score()
                         if pikachu.score >= 15:
+                            screen.blit(score_text, (10, 10))
                             done = game_win(screen, size)
                     elif selected_character == "pyree":
                         pyree.increase_score()
@@ -319,11 +321,10 @@ def runGame():
                         if kkobugi.score >= 15:
                             done = game_win(screen, size)
 
-                coins.remove(coin)
-
                 rect = pygame.Rect(coin_image.get_rect())
                 rect.top = -100
                 dy = random.randint(3, 9)
+                
                 while True:
                     rect.left = random.randint(0, size[0])
                     if not rect.colliderect(character):
