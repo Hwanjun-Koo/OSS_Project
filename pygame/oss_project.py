@@ -6,7 +6,8 @@ class Character:
 
     def __init__(self):
         self.image_path = ''
-        self.character_image = pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
+        self.character_image = \
+            pygame.transform.scale(pygame.image.load(self.image_path), (120, 120))
         self.speed = 5
         self.score = 0  # Score 변수 추가
 
@@ -183,6 +184,25 @@ def runGame():
                     kkobugi = Kkobugi()
                     speed = kkobugi.speed
                     character = pygame.Rect(kkobugi.character_image.get_rect())
+
+        font = pygame.font.Font('NanumGothic.ttf', 30)
+        text = font.render("!번호를 입력하여 캐릭터를 선택하세요!", True, (255, 0, 0))
+        screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2 - 7 * text.get_height()))
+        font = pygame.font.Font('NanumGothic.ttf', 25)
+        text = font.render("1. 피카츄 \t   2. 파이리 \t   3. 꼬부기", True, (0, 0, 255))
+        screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2 - 6 * text.get_height()))
+        font = pygame.font.Font('NanumGothic.ttf', 20)
+        text = font.render("--------------  캐릭터 설명  ---------------", True, (0, 0, 0))
+        screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2 - 4 * text.get_height()))
+        font = pygame.font.Font('NanumGothic.ttf', 20)
+        text = font.render("피카츄:\t\t공을 피하는 속도가 빠릅니다", True, (0, 0, 0))
+        screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2 - 2 * text.get_height()))
+        font = pygame.font.Font('NanumGothic.ttf', 20)
+        text = font.render("파이리:\t\t엔터키를 누르면 공이 일시적으로 사라집니다", True, (0, 0, 0))
+        screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2))
+        font = pygame.font.Font('NanumGothic.ttf', 20)
+        text = font.render("꼬부기:\t\t공을 3번 맞아야 게임이 종료됩니다", True, (0, 0, 0))
+        screen.blit(text, (size[0] // 2 - text.get_width() // 2, size[1] // 2 + 2 * text.get_height()))
 
         pygame.display.flip()
         clock.tick(30)
